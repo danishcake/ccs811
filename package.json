@@ -1,6 +1,6 @@
 {
   "name": "ccs811",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/libccs811.js",
   "typings": "dist/libccs811.d.ts",
   "license": "MIT",
