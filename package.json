@@ -26,6 +26,7 @@
     "i2c-bus": "=5.2.1"
   },
   "scripts": {
-    "lint": "eslint src/**/*.ts --quiet --fix"
+    "lint": "eslint src/**/*.ts --quiet --fix",
+    "prepare": "tsc"
   }
 }
