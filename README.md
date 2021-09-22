@@ -1,6 +1,6 @@
-# CCS881 lib
+# CCS811 lib
 
-A modern library for reading data from CCS881 sensors.
+A modern library for reading data from CCS811 sensors.
 
 ## Usage
 
@@ -59,7 +59,7 @@ To connect to a Raspberry Pi:
 - GPIO3 (SCL) to SCL
 - GND to GND and WAK
 
-![Raspberry Pi wiring diagram](circuit.png 'Raspberry Pi wiring')
+<img src="circuit.png" width="360" alt="Raspberry Pi wiring" />
 
 This library was developed to operate on a Raspberry Pi. The CCS811 uses clock stretching, where it keeps the clock signal low to indicate that it needs a bit more time to complete some operation. The Raspberry Pi does not support this, but we can avoid the need if we reduce the i2c clock to 10kHz. Ensure the following is present in `/boot/config.txt`
 

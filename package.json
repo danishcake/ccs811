@@ -9,6 +9,11 @@
     "email": "danishcake@hotmail.com",
     "url": "https://github.com/danishcake"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danishcake/ccs811.git"
+  },
+  "homepage": "https://github.com/danishcake/ccs811",
   "description": "A modern library for reading data from CCS811 sensors",
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
@@ -24,6 +29,9 @@
   },
   "dependencies": {
     "i2c-bus": "=5.2.1"
+  },
+  "engines": {
+    "node": ">=8"
   },
   "scripts": {
     "lint": "eslint src/**/*.ts --quiet --fix",
