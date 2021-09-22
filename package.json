@@ -1,8 +1,15 @@
 {
   "name": "ccs118",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/libccs811.js",
+  "typings": "dist/libccs811.d.ts",
   "license": "MIT",
+  "author": {
+    "name": "Edward Woolhouse",
+    "email": "danishcake@hotmail.com",
+    "url": "https://github.com/danishcake"
+  },
+  "description": "A modern library for reading data from CCS811 sensors",
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
     "@types/i2c-bus": "^5.1.0",
