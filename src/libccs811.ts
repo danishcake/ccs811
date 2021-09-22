@@ -20,8 +20,8 @@ const ccs811Registers = {
 // prettier-ignore
 const STATUS_MASK = {
   FW_MODE:    0b10000000, // 0 -> boot mode, 1 -> app mode (e.g. ready)
-  APP_VALID:  0b00100000, // 0 -> No firmware loaded, 1-> firmware loaded
-  DATA_READY: 0b00010000, // 1 -> New sample ready
+  APP_VALID:  0b00010000, // 0 -> No firmware loaded, 1-> firmware loaded
+  DATA_READY: 0b00001000, // 1 -> New sample ready
   ERROR:      0b00000001  // 1 -> Error occurred. Check ERROR_ID register
 }
 
@@ -86,7 +86,7 @@ const defaultConfig: CCS811Config = {
  * The result of polling the CCS811 sensor
  */
 interface CCS811Result {
-  c02: number; // ppm, typically around 400
+  co2: number; // ppm, typically around 400
   voc: number; // ppb
   status: {
     dataReady: boolean; // The above data is a new reading
@@ -100,6 +100,14 @@ interface CCS811Result {
     heaterFault: boolean; // Current to heater out of bounds
     heaterSupply: boolean; // Voltage to heater out of bounds
   };
+}
+
+/**
+ * An awaitable delay
+ * @param ms Period to wait, in milliseconds
+ */
+async function delay(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -122,7 +130,9 @@ export async function initialise(userConfig: Partial<CCS811Config> = {}): Promis
   }
 
   // Reset the device so it's in a known state
-  bus.writeI2cBlock(config.address, ccs811Registers.SW_RESET, 4, Buffer.of(0x11, 0xe5, 0x72, 0x8a));
+  // t_START has a worst case of 70ms, so we'll wait 100 to be safe
+  await bus.writeI2cBlock(config.address, ccs811Registers.SW_RESET, 4, Buffer.of(0x11, 0xe5, 0x72, 0x8a));
+  await delay(100);
 
   // Read status register
   const status = await bus.readByte(config.address, ccs811Registers.STATUS);
@@ -139,13 +149,13 @@ export async function initialise(userConfig: Partial<CCS811Config> = {}): Promis
   // For simplicity, we only support the 'normal' polling modes
   switch (config.pollPeriodMs) {
     case 1000:
-      bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_1);
+      await bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_1);
       break;
     case 10000:
-      bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_1);
+      await bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_1);
       break;
     case 60000:
-      bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_3);
+      await bus.writeByte(config.address, ccs811Registers.MEAS_MODE, MEAS_MODE_MASK.DRIVE_MODE_3);
       break;
     default:
       // Error case for Javascript callers
@@ -164,7 +174,7 @@ export async function initialise(userConfig: Partial<CCS811Config> = {}): Promis
  */
 export async function close(state: CCS811State): Promise<void> {
   // Reset the device so it's in a known state
-  state.bus.writeI2cBlock(state.config.address, ccs811Registers.SW_RESET, 4, Buffer.of(0x11, 0xe5, 0x72, 0x8a));
+  await state.bus.writeI2cBlock(state.config.address, ccs811Registers.SW_RESET, 4, Buffer.of(0x11, 0xe5, 0x72, 0x8a));
 }
 
 /**
@@ -225,7 +235,7 @@ export async function pollSensor(state: CCS811State): Promise<CCS811Result> {
 
   // Unpack the buffer into easy to use results
   return {
-    c02: (algResult.buffer[0] << 8) | algResult.buffer[1],
+    co2: (algResult.buffer[0] << 8) | algResult.buffer[1],
     voc: (algResult.buffer[2] << 8) | algResult.buffer[3],
     status: {
       dataReady: (algResult.buffer[4] & STATUS_MASK.DATA_READY) !== 0,
