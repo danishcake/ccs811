@@ -1,5 +1,5 @@
 {
-  "name": "ccs118",
+  "name": "ccs811",
   "version": "1.0.1",
   "main": "dist/libccs811.js",
   "typings": "dist/libccs811.d.ts",
@@ -15,6 +15,14 @@
   },
   "homepage": "https://github.com/danishcake/ccs811",
   "description": "A modern library for reading data from CCS811 sensors",
+  "keywords": [
+    "ccs811",
+    "ccs 811",
+    "ams ccs811",
+    "sciosense ccs811",
+    "CO2 sensor",
+    "raspberrypi"
+  ],
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
     "@types/i2c-bus": "^5.1.0",
