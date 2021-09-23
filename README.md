@@ -2,6 +2,18 @@
 
 A modern library for reading data from CCS811 sensors.
 
+## Installation
+
+```bash
+# npm users
+npm install --save ccs811
+
+# yarn users
+yarn add ccs811
+```
+
+Typescript defintions are included.
+
 ## Usage
 
 ```typescript
@@ -11,7 +23,7 @@ import { initialise, pollSensor } from 'ccs811';
   const handle = await initialise({
     bus: 1,
     address: 0x5a,
-    pollPeriodMs: 1000
+    pollPeriodMs: 1000 // Valid values: 1000, 10000, 60000
   });
 
   // ... Wait a few seconds. Note that a CCS811 becomes more accurate after 48 hours of burn in.
